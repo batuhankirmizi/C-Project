@@ -223,11 +223,11 @@ if(movement==3)
 {
   for(j=1;j<=jump;j++)
    {
-       if(x%2==0)
+       if(x%2==1)
         {   if(x-j<0 || (y-j/2)<0 || board[x-j][y-j/2]==0 || board[x-j][y-j/2]>3)
             { return 0;}
         }
-    if(x%2==1)
+    if(x%2==0)
         {   if(x-j<0 || (y-(j+1)/2)<0 || board[x-j][y-(j+1)/2]==0 || board[x-j][y-(j+1)/2]>3)
             { return 0;}
         }
@@ -238,11 +238,11 @@ if(movement==4)
 {
   for(j=1;j<=jump;j++)
    {
-       if(x%2==1)
+       if(x%2==0)
     {   if(x-j<0 || (y+j/2)>board_size_Y-1 || board[x-j][y+j/2]==0 || board[x-j][y+j/2]>3)
         { return 0;}
     }
-    if(x%2==0)
+    if(x%2==1)
     {   if(x-j<0 || (y+(j+1)/2)>board_size_Y-1 || board[x-j][y+(j+1)/2]==0 || board[x-j][y+(j+1)/2]>3)
         {return 0;}
     }
@@ -253,11 +253,11 @@ if(movement==5)
 {
   for(j=1;j<=jump;j++)
    {
-       if(x%2==0)
+       if(x%2==1)
     {   if(x+j>board_size_X-1 || (y-j/2)<0 || board[x+j][y-j/2]==0 || board[x+j][y-j/2]>3)
         { return 0;}
     }
-    if(x%2==1)
+    if(x%2==0)
     {   if(x+j>board_size_X-1 || (y-(j+1)/2)<0 || board[x+j][y-(j+1)/2]==0 || board[x+j][y-(j+1)/2]>3)
         { return 0;}
     }
@@ -268,11 +268,11 @@ if(movement==6)
 {
   for(j=1;j<=jump;j++)
    {
-       if(x%2==1)
+       if(x%2==0)
     {   if(x+j>board_size_X-1 || (y+j/2)>board_size_Y-1 || board[x+j][y+j/2]==0 || board[x+j][y+j/2]>3)
         { return 0;}
     }
-    if(x%2==0)
+    if(x%2==1)
     {   if(x+j>board_size_X-1 || (y+(j+1)/2)>board_size_Y-1 || board[x+j][y+(j+1)/2]==0 || board[x+j][y+(j+1)/2]>3)
        { return 0;}
     }
@@ -308,4 +308,20 @@ if(p==6*penguins_per_player)
 else
     return 1;
 
+}
+int check_if_any_movement_is_possible(int board_size_X, int board_size_Y,int* board[], int i, int j)
+{
+int k,p;
+p=0;
+            for(k=0;k<6;k++)
+            {
+                if(check_move( board_size_X, board_size_Y,board,i,j,1,k+1)==0) // checking if penguin can move
+                {p++;} // counting in how many directions penguin can't move
+
+            }
+
+if(p==6)
+    return 0;
+else
+    return 1;
 }

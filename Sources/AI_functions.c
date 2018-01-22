@@ -7,7 +7,7 @@ they have to be implemented for the last report
 
 */
 
-void AI_penguin_place(int board_size_X, int board_size_Y,int* board[],int player){
+void AI_penguin_place(int board_size,int* board[],int player){
 
 //gotta develop a game logic here, where to place it
 //you need to know which player it is to write the penguins name
@@ -24,9 +24,24 @@ while(1){
 }
 
 }
+int check_if_any_movement_is_possible(int board_size,int* board[], int i, int j)
+{
+int k,p;
+p=0;
+            for(k=0;k<6;k++)
+            {
+                if(check_move(board_size,board,i,j,1,k+1)==0) // checking if penguin can move
+                {p++;} // counting in how many directions penguin can't move
 
+            }
 
-void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int player, int* points){ //a move command will be given according to the game logic/st
+if(p==6)
+    return 0;
+else
+    return 1;
+}
+
+void AI_penguin_move(int board_size, int* board[], int player){ //a move command will be given according to the game logic/st
     //first decide which penguin to move
     //int penguin = AI_which_penguin(player); //you need to know which player to decide on which penguin to move, maybe return coordinates ?
     //move the selected penguin
@@ -39,21 +54,20 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
  i=rand()%7;
  j=rand()%7;
 
- if (board[i][j]==3+player && check_if_any_movement_is_possible(board_size_X,board_size_Y,board,i,j)==1)
+ if (board[i][j]==3+player && check_if_any_movement_is_possible(board_size,board,i,j)==1)
     break;}
  int a,b;
  for(n=3;n>=1;n--)
 {
- for(a=0;a<board_size_X;a++)
+ for(a=0;a<board_size;a++)
  {
-     for(b=0;b<board_size_Y;b++)
+     for(b=0;b<board_size;b++)
      {
          if(n==3) { //search for field with 3 fishes
         if(board[a][b]==3 && a==i) // left 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,j-b,1)==1)
+             if(check_move(board_size,board,i,j,j-b,1)==1)
             {
-            points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -62,9 +76,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
         if(board[a][b]==3 && a==i) // right 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,b-j,2)==1)
+             if(check_move(board_size,board,i,j,b-j,2)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -73,9 +86,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==3 && i%2==0 && (j-(i+1-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)+1) ) // up-left even row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -84,9 +96,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==3 && i%2==1 && (j-(i-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)-1) ) // up-left odd row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -95,9 +106,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==3 && i%2==0 && (j+(i-a)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)-1)) // up-right even row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -106,9 +116,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==3 && i%2==1 && (j+(i-a+1)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)+1) ) // up-right odd row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -117,9 +126,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==3 && i%2==0 && (j-(a-i+1)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)-1) ) // down-left even row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -128,9 +136,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==3 && i%2==1 && (j-(a-i)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)+1) ) // down-left odd row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -139,9 +146,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==3 && i%2==0 && (j+(a-i)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)+1) ) // down-right even row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -150,9 +156,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==3 && i%2==1 && (j+(a-i+1)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)-1) ) // down-right odd row 3 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -164,9 +169,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          {
           if(board[a][b]==2 && a==i) // left 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,j-b,1)==1)
+             if(check_move(board_size,board,i,j,j-b,1)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -175,9 +179,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
         if(board[a][b]==2 && a==i) // right 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,b-j,2)==1)
+             if(check_move(board_size,board,i,j,b-j,2)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -186,9 +189,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==2 && i%2==0 && (j-(i+1-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)+1) ) // up-left even row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -197,9 +199,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==2 && i%2==1 && (j-(i-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)-1) ) // up-left odd row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -208,9 +209,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==2 && i%2==0 && (j+(i-a)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)-1) ) // up-right even row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -219,9 +219,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==2 && i%2==1 && (j+(i-a+1)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)+1)) // up-right odd row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -230,9 +229,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==2 && i%2==0 && (j-(a-i+1)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)-1) ) // down-left even row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -241,9 +239,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==2 && i%2==1 && (j-(a-i)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)+1) ) // down-left odd row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -252,9 +249,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==2 && i%2==0 && (j+(a-i)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)+1)) // down-right even row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -263,9 +259,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==2 && i%2==1 && (j+(a-i+1)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)-1)) // down-right odd row 2 fishes
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -277,9 +272,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          {
           if(board[a][b]==1 && a==i) // left 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,j-b,1)==1)
+             if(check_move(board_size,board,i,j,j-b,1)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -288,9 +282,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
         if(board[a][b]==1 && a==i) // right 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,b-j,2)==1)
+             if(check_move(board_size,board,i,j,b-j,2)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -299,9 +292,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==1 && i%2==0 && (j-(i+1-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)+1) ) // up-left even row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -310,9 +302,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==1 && i%2==1 && (j-(i-a)/2)==b && (a==i-2*(j-b) || a==i-2*(j-b)-1) ) // up-left odd row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,3)==1)
+             if(check_move(board_size,board,i,j,i-a,3)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -321,9 +312,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==1 && i%2==0 && (j+(i-a)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)-1) ) // up-right even row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -332,9 +322,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==1 && i%2==1 && (j+(i-a+1)/2)==b && (a==i-2*(b-j) || a==i-2*(b-j)+1) ) // up-right odd row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,i-a,4)==1)
+             if(check_move(board_size,board,i,j,i-a,4)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -343,9 +332,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==1 && i%2==0 && (j-(a-i+1)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)-1) ) // down-left even row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -354,9 +342,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
          if(board[a][b]==1 && i%2==1 && (j-(a-i)/2)==b && (a==i+2*(j-b) || a==i+2*(j-b)+1) ) // down-left odd row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,5)==1)
+             if(check_move(board_size,board,i,j,i-a,5)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -365,9 +352,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==1 && i%2==0 && (j+(a-i)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)+1)) // down-right even row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -376,9 +362,8 @@ void AI_penguin_move(int board_size_X, int board_size_Y, int* board[], int playe
          }
           if(board[a][b]==1 && i%2==1 && (j+(a-i+1)/2)==b && (a==i+2*(b-j) || a==i+2*(b-j)-1) ) // down-right odd row 1 fish
          {
-             if(check_move(board_size_X,board_size_Y,board,i,j,a-i,6)==1)
+             if(check_move(board_size,board,i,j,i-a,6)==1)
             {
-                points+=board[i][j];
             board[a][b]=board[i][j];
             board[i][j]=0;
             key=1;
@@ -406,12 +391,12 @@ return 1;
 
 }
 
-int AI_check_if_all_placed(int board_size_X, int board_size_Y,int* board[],int penguin_count, int player){
+int AI_check_if_all_placed(int board_size, int* board[],int penguin_count, int player){
     int i,j;
     int how_many_penguins=0;
-    for(i=0;i<board_size_X;i++)
+    for(i=0;i<board_size;i++)
     {
-        for(j=0;j<board_size_Y;j++)
+        for(j=0;j<board_size;j++)
         {
             if(board[i][j]==player+3)
                 how_many_penguins++;

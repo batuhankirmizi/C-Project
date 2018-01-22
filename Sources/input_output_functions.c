@@ -2,6 +2,31 @@
 #include <stdio.h>
 #include <string.h>
 
+ int check_existing_of_player(char* filenanme,char* name)
+    {
+        FILE *fp;
+    fp = fopen(filenanme , "r");
+    if(fp == NULL) { //coundt open the file
+    perror("Error opening file");
+    }
+    else
+    {
+char temp[512];
+while(fgets(temp, 512, fp) != NULL) {
+    if(strstr(temp,name)!=NULL)
+    { fclose(fp);
+        return 1;
+    }
+else
+    {
+        fclose(fp);
+        return 0;
+    }
+}
+
+
+    }
+    }
 
 int get_board_size_X(char *filenanme){ //gets the boardsize from the text file
     int board_size=-1;
@@ -42,7 +67,7 @@ int get_board_size_Y(char *filenanme){ //gets the boardsize from the text file
 
 
 }
-void read_from_text_file_and_create_board(int board_size_X,int board_size_Y,int* board[],char *filenanme ){
+void read_from_text_file_and_create_board(int board_size_X,int board_size_Y,int* board[],char *filenanme, char names[10][200]){
     FILE *fp;
     fp = fopen(filenanme , "r");
     if(fp == NULL) {
@@ -64,7 +89,13 @@ void read_from_text_file_and_create_board(int board_size_X,int board_size_Y,int*
         for(j=0; j<board_size_Y; j++){
             fscanf(fp,"%d",&board[i][j]);
         }}
+        i=0;
+        fgets(names[0],200,fp);
+        for(i=0;i<1;i++)
+        {
+         fgets(names[i],200,fp);
 
+        }
         fclose(fp);
         }
 
@@ -73,11 +104,9 @@ void read_from_text_file_and_create_board(int board_size_X,int board_size_Y,int*
 }
 /*
 Can later add the functionality to read and write scores/points, didnt seemed necessary now since we didnt agree on a format
-
-
 */
 
-void write_to_text_file(int board_size_X, int board_size_Y,int* board[],char *filenanme, char* name){
+void write_to_text_file(int board_size_X, int board_size_Y,int* board[],char *filenanme, char names[10][200]){
     FILE *fp;
     fp = fopen(filenanme , "w");
     if(fp == NULL) { //coundt open the file
@@ -102,11 +131,11 @@ void write_to_text_file(int board_size_X, int board_size_Y,int* board[],char *fi
 
         }
         fprintf(fp,"Programs and their score:\n");
-    for(i=0;i<strlen(name);i++)
+    for(i=0;i<strlen(names[i])-3;i++)
     {
-    fprintf(fp,"%c",name[i]);
+    fprintf(fp,"%s",names[i]);
     }
-    fprintf(fp,":%d",0);
+    fprintf(fp,": %d",0);
 
     }
 
@@ -129,5 +158,4 @@ void write_to_text_file(int board_size_X, int board_size_Y,int* board[],char *fi
         fprintf(fp,"%c",name[i]);
     }
     }
-
 }*/
