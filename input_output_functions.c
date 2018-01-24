@@ -44,11 +44,24 @@ int line_count_in_text_file(char* file_name) {
 int check_player_name(char* file_name, char *player_name) {
 	FILE *fp = fopen(file_name, "r");
 	char ch[250];
+	char teamname[100];
+	int j = 0;
+	char temp;
+
 	for(int i = 0; i < line_count_in_text_file(file_name); ++i) {
 		fgets(ch, sizeof(ch), fp);
-		if(strcmp(ch, player_name) == 0) {
-			fclose(fp);
-			return 1;
+		if(strcmp(ch, "Programs and their score:\n") == 0) {
+			while((temp = fgetc(fp)) != ':') {
+				teamname[j] = temp;
+				j++;
+			} // player1
+			teamname[j] = '\0'; // player1\0
+			if(strcmp(teamname, player_name) == 0) {
+				fclose(fp);
+				return 1;
+			} else {
+				j = 0;
+			}
 		}
 	}
 
@@ -177,9 +190,10 @@ void write_to_text_file(int board_size_X, int board_size_Y,int* board[],char *fi
 		}
 		for(j=0;j<board_size_Y;j++){
 				if (j<(board_size_Y-1)){
-				fprintf(fp,"%d ",board[i][j]);}
+					fprintf(fp, "%d ", board[i][j]);
+				}
 				else{
-				fprintf(fp,"%d\n",board[i][j]);
+					fprintf(fp, "%d\n", board[i][j]);
 				}
 		}
 

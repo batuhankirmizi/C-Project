@@ -1,7 +1,8 @@
 #include "boardfunctions (1).h"
 #include <stdio.h>
 #include<stdlib.h>
-
+#include <string.h>
+#include "input_output_functions.h"
 
 
 void input_data(int* number_of_players, int* penguins_per_player ) // entering data from the user
@@ -117,6 +118,26 @@ int enough_place(int board_size_X,int board_size_Y, int* board[], int number_of_
 	return 1;}
 	}
 }
+
+int board_contains(char *fn, int i) {
+	FILE *f;
+	f = fopen(fn, "r");
+
+	char ch[250];
+	char temp;
+	char teamname[40];
+	int j = 0, k = 0;
+
+	for(int x = 0; x < line_count_in_text_file(fn); ++x) {
+		fgets(ch, sizeof(ch), f);
+		while((temp = fgetc(f)) != '\n') {
+			if(temp - '0' == i) return 1;
+		}
+	}
+	fclose(f);
+	return 0;
+}
+
 int how_many_players(int board_size_X, int board_size_Y, int* board[], int penguins)
 {
 	int i,j;

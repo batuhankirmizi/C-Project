@@ -5,12 +5,25 @@
 #include "input_output_functions.h"
 #include "AI_functions.h"
 #include "player_list.h"
+#include "boardfunctions (1).h"
 
 int points = 0;
 
 player *head = NULL;
 
+int player_number = 4;
+
 int main(int argc, char *argv[]) {
+	if(get_board_size_Y(argv[3]) + 1 == line_count_in_text_file(argv[3])) {
+		player_number = 4;
+	} else if(get_board_size_Y(argv[3]) + 3 == line_count_in_text_file(argv[3])) {
+		player_number = 5;
+	} else if(get_board_size_Y(argv[3]) + 4 == line_count_in_text_file(argv[3])) {
+		player_number = 6;
+	} else if(get_board_size_Y(argv[3]) + 5 == line_count_in_text_file(argv[3])) {
+		player_number = 7;
+	}
+
 #if 0//MAKE if 1 to run this part interactive part
 
 	srand(time(NULL)); //random seed
@@ -110,7 +123,15 @@ int main(int argc, char *argv[]) {
 			*/
 			if(strcmp(argv[1],"phase=placement") == 0) { // if they are equal -> the second parameter phase=placement
 				printf("Gotta do what you gotta do \n"); // execute accordingly
-				int player_number = argv[0][6] - '0'; // use 1 to simplify and to get chance to compile our program in codeblocks //taking the player number as an int - e.g 1,2 etc. assuming program name player1, player2 etc. returns something stupid when you call it from codeblocks, need to command line compile
+				//int player_number = argv[0][6] - '0'; // use 1 to simplify and to get chance to compile our program in codeblocks //taking the player number as an int - e.g 1,2 etc. assuming program name player1, player2 etc. returns something stupid when you call it from codeblocks, need to command line compile
+
+				/*
+				 * team 1 -> 2 penguin, 4, 4
+				 * team 2 -> 2 penguin, 5, 5
+				 * team 3 -> 2 penguins, 6, 6
+				 * team 4 -> 2 penguins, 7, 7
+				 */
+
 				int penguin_count = argv[2][9] - '0'; //penguin count acquired as an int -> converting from char to int
 				printf("penguin count %d\n",penguin_count); //DEBUGGING PURPOSE
 			   // printf("% d", atoi(argv[2][9]));
@@ -128,7 +149,6 @@ int main(int argc, char *argv[]) {
 				if(exists(head, argv[0]) == 0)
 					add_player(head, argv[0], penguin_count);
 				read_from_text_file_and_create_board(board_size_X,board_size_Y,board,argv[3],argv[0]); //read the info from the text file, populate the board
-
 				if(AI_check_if_all_placed(board_size_X,board_size_Y,board,penguin_count,player_number)==0){ //still there are penguins to place
 						AI_penguin_place(board_size_X,board_size_Y,board,player_number, &points);
 				}
@@ -153,7 +173,6 @@ int main(int argc, char *argv[]) {
 			if(strcmp(argv[1],"phase=movement") == 0){  // if they are equal -> the second parameter phase=movement
 			//how_many_players(board_size_X, board_size_Y, board);
 				printf("Gotta do what you gotta do \n"); // execute accordingly
-				int player_number =argv[0][6]-'0'; //taking the player number as an int - e.g 1,2 etc.
 				//argv[2] is the input text file's name
 				//argv[3] is the output file's name
 
@@ -168,7 +187,7 @@ int main(int argc, char *argv[]) {
 				
 				char player_name[8] = "player1";
 				points = get_points(argv[2], player_name);
-				AI_penguin_move(board_size_X,board_size_Y,board,player_number, &points); // AI_function moves the penguin to some place - not implemented
+				AI_penguin_move(board_size_X,board_size_Y,board, player_number, &points); // AI_function moves the penguin to some place - not implemented
 
 				//change_points(argv[3],argv[0],&points);
 				write_to_text_file(board_size_X,board_size_Y, board, argv[3], argv[0], points); //writes the final board config

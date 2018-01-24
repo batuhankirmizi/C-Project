@@ -15,12 +15,12 @@ void AI_penguin_place(int board_size_X, int board_size_Y,int* board[],int player
 	int i=0,j=0; // gotta calculate the coordinates looking at the board
 	// board[i][j]=3+player; //placing the penguin
 	while(1){
-		 i = rand()% board_size_X;
-		 j = rand()% board_size_Y;
+		 i = rand() % board_size_X;
+		 j = rand() % board_size_Y;
 		 if(board[i][j]==1)
 		 {
 			 *points += 1;
-			board[i][j]=player+3;
+			board[i][j]=player;
 			break;
 		 }
 	}
