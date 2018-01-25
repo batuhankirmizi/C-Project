@@ -4,25 +4,20 @@
 #include <string.h>
 #include "input_output_functions.h"
 #include "AI_functions.h"
-#include "player_list.h"
-#include "boardfunctions (1).h"
+#include "player (1).h"
 
 int points = 0;
 
-player *head = NULL;
+player *head = NULL; // beginning of the players linked list
+player *current_player = NULL; // for the placement phase, for placing rest of the penguins for the player
+player **players = NULL; // for the placement phase, for placing rest of the penguins for the player
 
 int player_number = 4;
 
 int main(int argc, char *argv[]) {
-	if(get_board_size_Y(argv[3]) + 1 == line_count_in_text_file(argv[3])) {
-		player_number = 4;
-	} else if(get_board_size_Y(argv[3]) + 3 == line_count_in_text_file(argv[3])) {
-		player_number = 5;
-	} else if(get_board_size_Y(argv[3]) + 4 == line_count_in_text_file(argv[3])) {
-		player_number = 6;
-	} else if(get_board_size_Y(argv[3]) + 5 == line_count_in_text_file(argv[3])) {
-		player_number = 7;
-	}
+	// TODO DELETE DEBUG!
+	argv[0] = "Player1";
+	// TODO DELETE DEBUG!
 
 #if 0//MAKE if 1 to run this part interactive part
 
@@ -110,7 +105,11 @@ int main(int argc, char *argv[]) {
 
 #else  //make #if 0 upwards, to run this part
 
- srand(time(NULL));
+	srand(time(NULL));
+	if(has_players(argv[3])) { // if we already have some players in the game
+		players = add_all_the_existing_players(head, argv[3]); // add all the existing players in the text file into our linked list
+	}
+	head = players != NULL ? *players : NULL;
 		if (argc == 5){ // Format : -> player1.out phase=placement penguins=3 inputboard.txt outpuboard.txt
 			/*
 			argv[0]= player1.out // or the name of the program
@@ -121,7 +120,34 @@ int main(int argc, char *argv[]) {
 
 
 			*/
-			if(strcmp(argv[1],"phase=placement") == 0) { // if they are equal -> the second parameter phase=placement
+			int penguin_count = argv[2][9] - '0'; //penguin count acquired as an int -> converting from char to int
+
+			// TODO
+			// player1 phase=placement penguins=2 board0.txt board0.txt
+			if(check_player_name(argv[3], argv[0]) == 1) { // this player has already joined the game -->
+				current_player = get_player(players, player_count_p(argv[3], players), argv[0]);
+				current_player->points++;
+			} else {
+				current_player = add_new_player(head, penguin_count, argv[0], get_number_for_new_player(argv[3], players));
+				if(players == NULL) {
+					players = (player**) malloc(sizeof(player*));
+					players[0] = current_player;
+				} else {
+					player *iter = players[0];
+					for (int i = 0; i < player_count(argv[3]); ++i) {
+						if(iter == current_player) break;
+						if(iter->next == NULL)
+							iter->next = current_player;
+					}
+				}
+			}
+
+			/*	   INITIALISE PLACEMENT PHASE IF PHASE PARAMETER IS EQUAL TO THE "PLACEMENT"
+			*										AND IF
+			*  PENGUIN COUNT OF CURRENT PLAYER ON THE BOARD IS LESS THAN REQUIRED PENGUIN COUNT
+			*/
+			// TODO
+			if(strcmp(argv[1],"phase=placement") == 0 && get_penguin_count_of(argv[3], current_player->team_name, current_player->number) < penguin_count) { // if they are equal -> the second parameter phase=placement
 				printf("Gotta do what you gotta do \n"); // execute accordingly
 				//int player_number = argv[0][6] - '0'; // use 1 to simplify and to get chance to compile our program in codeblocks //taking the player number as an int - e.g 1,2 etc. assuming program name player1, player2 etc. returns something stupid when you call it from codeblocks, need to command line compile
 
@@ -132,35 +158,22 @@ int main(int argc, char *argv[]) {
 				 * team 4 -> 2 penguins, 7, 7
 				 */
 
-				int penguin_count = argv[2][9] - '0'; //penguin count acquired as an int -> converting from char to int
-				printf("penguin count %d\n",penguin_count); //DEBUGGING PURPOSE
-			   // printf("% d", atoi(argv[2][9]));
-				//argv[3] is the input text file's name
-				//argv[4] is the output files name
-
 				int board_size_X=get_board_size_X(argv[3]); // get the board side X
 				int board_size_Y=get_board_size_Y(argv[3]); // get the board side Y
-				printf("board_size : %d\n",board_size_X); //DEBUGGING PURPOSE
 				int** board=(int**)malloc(board_size_X* sizeof(int *));
-				int i;
-				for (i=0; i<board_size_Y; i++)
+				for (int i=0; i<board_size_Y; i++)
 					board[i] = (int *) malloc(board_size_Y * sizeof(int)); // create the board, static, can be converted to dynmic if need be
-				int points = 0;
-				if(exists(head, argv[0]) == 0)
-					add_player(head, argv[0], penguin_count);
-				read_from_text_file_and_create_board(board_size_X,board_size_Y,board,argv[3],argv[0]); //read the info from the text file, populate the board
-				if(AI_check_if_all_placed(board_size_X,board_size_Y,board,penguin_count,player_number)==0){ //still there are penguins to place
-						AI_penguin_place(board_size_X,board_size_Y,board,player_number, &points);
-				}
-				else{ //all penguins have been placed
-					printf("No more penguins to place \n");
-					exit(1);
 
-				}
-				write_to_text_file(board_size_X,board_size_Y,board,argv[4],argv[0], points); //write to another text file after everything has been done
+				/*if(players == NULL) {
+					players = (player**) malloc(sizeof(player*));
+					players[0] = current_player;
+				}*/
+			
+				//if(player_count_p(argv[3], players) == 0) players[0] = current_player;
 
-
-
+				read_from_text_file_and_create_board(board_size_X,board_size_Y,board,argv[3],players, player_count_p(argv[3], players) == 0 ? 1 : player_count_p(argv[3], players)); //read the info from the text file, populate the board
+				AI_penguin_place(board_size_X, board_size_Y, board, current_player->number); // place the penguin
+				write_to_text_file(board_size_X,board_size_Y,board,argv[4], players, player_count_p(argv[3], players) == 0 ? 1 : player_count_p(argv[3], players)); //write to another text file after everything has been done
 			}
 			else{ // the argument count is ok but the second parameter is not phase=placement
 				printf("Sorry, there is a mismatch in the arguments, try again!(phase=placement)");
@@ -183,23 +196,19 @@ int main(int argc, char *argv[]) {
 				for (i=0; i<board_size_X; i++)
 				board[i] = (int *)malloc(board_size_Y * sizeof(int));
 				char* names[200];
-				read_from_text_file_and_create_board(board_size_X,board_size_Y,board,argv[2],names); //read the board configuration and store it in board
+				read_from_text_file_and_create_board(board_size_X,board_size_Y,board,argv[0],players, player_count_p(argv[3], players)); //read the board configuration and store it in board
 				
 				char player_name[8] = "player1";
 				points = get_points(argv[2], player_name);
 				AI_penguin_move(board_size_X,board_size_Y,board, player_number, &points); // AI_function moves the penguin to some place - not implemented
 
 				//change_points(argv[3],argv[0],&points);
-				write_to_text_file(board_size_X,board_size_Y, board, argv[3], argv[0], points); //writes the final board config
-
-
-
-
+				write_to_text_file(board_size_X, board_size_Y, board, argv[0], players, player_count_p(argv[3], players)); //writes the final board config
 				}
 
 
 
-			else{ // the arguments given do not match
+			else { // the arguments given do not match
 				printf("Sorry, there is a mismatch in the arguments, try again! (phase=movement)");
 				exit(1);
 			}

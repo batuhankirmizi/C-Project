@@ -8,7 +8,7 @@ they have to be implemented for the last report
 
 */
 
-void AI_penguin_place(int board_size_X, int board_size_Y,int* board[],int player, int *points){
+void AI_penguin_place(int board_size_X, int board_size_Y,int* board[],int player){
 
 //gotta develop a game logic here, where to place it
 //you need to know which player it is to write the penguins name
@@ -19,7 +19,6 @@ void AI_penguin_place(int board_size_X, int board_size_Y,int* board[],int player
 		 j = rand() % board_size_Y;
 		 if(board[i][j]==1)
 		 {
-			 *points += 1;
 			board[i][j]=player;
 			break;
 		 }
