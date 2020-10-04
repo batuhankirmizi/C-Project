@@ -1,2 +1,2 @@
-# c_project
-Penguin game
+# C Project
+Penguin game for school project
